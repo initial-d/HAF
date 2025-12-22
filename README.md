@@ -6,7 +6,7 @@
 Implementation of the **Hausdorff-Adaptive Filter (HAF)** algorithm from the paper:
 
 > **"Robust Online Learning in Non-Stationary Markets: A Credal Set Approach with Uncertainty Quantification"**  
-> Jane Chen, University of Chicago, December 2024
+> Yimin Du, December 2025
 
 ## Overview
 
