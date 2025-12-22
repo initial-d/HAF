@@ -2,6 +2,12 @@
 Unit tests for HAF implementation
 """
 
+import sys
+import os
+
+# Add parent directory to path to import haf_core
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 import numpy as np
 import pytest
 from haf_core import GaussianDistribution, CredalSet, HausdorffAdaptiveFilter
