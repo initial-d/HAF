@@ -2,11 +2,31 @@
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Paper](https://img.shields.io/badge/Paper-arXiv-red.svg)](https://arxiv.org)
 
 Implementation of the **Hausdorff-Adaptive Filter (HAF)** algorithm from the paper:
 
 > **"Robust Online Learning in Non-Stationary Markets: A Credal Set Approach with Uncertainty Quantification"**  
-> Yimin Du, December 2025
+> Yimin du
+
+## 🎯 Paper Reproduction
+
+**This implementation is publication-ready** and reproduces key paper results:
+
+```bash
+# Reproduce Tables 1-3 with statistical validation
+python reproduce_paper.py
+```
+
+✅ **Includes**:
+- All baseline methods (BOCPD, HMM, RMV, BOL)
+- Bootstrap confidence intervals
+- Statistical significance tests (p-values)
+- Negative results (high-SNR environments)
+
+See **[REPRODUCTION.md](REPRODUCTION.md)** for detailed reproduction guide.
+
+---
 
 ## Overview
 
@@ -32,9 +52,14 @@ cd haf-implementation
 
 # Install dependencies
 pip install -r requirements.txt
+
+# Optional: For real data experiments
+pip install yfinance
 ```
 
 ## Quick Start
+
+### Basic Usage
 
 ```python
 from haf_core import HausdorffAdaptiveFilter
@@ -64,43 +89,41 @@ for observation in market_data:
     print(f"Regime: {regime}, Uncertainty: {metrics['diameter']:.4f}")
 ```
 
-## Running the Demo
-
-The demo generates synthetic market data with known regime changes and compares HAF against a simple baseline:
+### Reproduce Paper Results
 
 ```bash
+# Run complete reproduction suite
+python reproduce_paper.py
+
+# Run basic demo
 python demo.py
+
+# Run tests
+pytest tests/ -v
 ```
-
-This will:
-1. Generate 700 periods of synthetic data with regime changes at t=300 (crisis) and t=400 (recovery)
-2. Run HAF and baseline algorithms
-3. Compute performance metrics (Sharpe ratio, max drawdown, etc.)
-4. Create visualization showing:
-   - Cumulative returns comparison
-   - Contraction ratio (regime detection signal)
-   - Credal set diameter (epistemic uncertainty)
-   - Position sizes over time
-
-### Expected Results
-
-From the paper's experiments, HAF achieves:
-- **25-40% higher Sharpe ratios** during turbulent periods vs. baselines
-- **Earlier regime detection** (e.g., 3 weeks before peak in 2015 China crash)
-- **Comparable performance** in stable regimes (no over-conservatism)
 
 ## Project Structure
 
 ```
 haf-implementation/
-├── README.md                 # This file
-├── requirements.txt          # Python dependencies
-├── haf_core.py              # Core HAF implementation
-├── demo.py                  # Synthetic data demo
+├── README.md                    # This file
+├── REPRODUCTION.md              # Paper reproduction guide (NEW)
+├── requirements.txt             # Dependencies
+├── haf_core.py                  # Core HAF implementation
+├── baselines.py                 # Baseline methods (BOCPD, HMM, RMV, BOL) (NEW)
+├── statistical_utils.py         # Bootstrap CI, p-values (NEW)
+├── data_loader.py               # Data loading utilities (NEW)
+├── reproduce_paper.py           # Paper reproduction script (NEW)
+├── demo.py                      # Basic demo
 ├── tests/
-│   └── test_haf.py          # Unit tests
-└── examples/
-    └── multi_asset_example.py  # Multi-asset portfolio example
+│   └── test_haf.py             # Unit tests
+├── examples/
+│   └── multi_asset_example.py  # Multi-asset portfolio example
+└── docs/
+    ├── QUICK_START.md          # Quick start guide
+    ├── USAGE_EXAMPLES.md       # Usage examples
+    ├── PROJECT_STRUCTURE.md    # Code organization
+    └── TEST_DOCUMENTATION.md   # Test documentation
 ```
 
 ## Core Components
@@ -210,9 +233,7 @@ The paper suggests several extensions:
 If you use this implementation, please cite:
 
 ```bibtex
-@article{,
- 
-}
+
 ```
 
 ## License
@@ -225,6 +246,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Acknowledgments
 
+- Original paper by 
 - Built on credal set theory by Walley (1991) and fixed-point theorems by Caprio et al. (2025)
 
 ## Contact
