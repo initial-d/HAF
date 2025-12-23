@@ -7,6 +7,7 @@ import numpy as np
 from scipy.stats import norm
 from collections import deque
 
+from scipy.stats import t  # 必须导入 t
 
 class BOCPD:
     """Bayesian Online Change Point Detection (Adams & MacKay 2007)"""
@@ -14,8 +15,7 @@ class BOCPD:
     def __init__(self, hazard_rate=0.01, mu0=0, kappa0=1, alpha0=10, beta0=1e-4):
         """
         Args:
-            hazard_rate: Prior probability of change point at each step
-            mu0, kappa0, alpha0, beta0: Normal-Gamma prior parameters
+            beta0: Scale of the variance prior. 1e-4 is appropriate for daily returns.
         """
         self.hazard = hazard_rate
         self.mu0 = mu0
@@ -23,11 +23,9 @@ class BOCPD:
         self.alpha0 = alpha0
         self.beta0 = beta0
         
-        # Run length distribution
-        self.R = np.array([1.0])  # P(r_t | x_1:t)
+        self.R = np.array([1.0])
         self.max_runlength = 250
         
-        # Sufficient statistics for each run length
         self.mu = [mu0]
         self.kappa = [kappa0]
         self.alpha = [alpha0]
@@ -37,19 +35,25 @@ class BOCPD:
         self.detection_history = []
         
     def update(self, observation):
-        """Update with new observation"""
         x = observation[0] if isinstance(observation, np.ndarray) else observation
         
-        # Evaluate predictive probability
         T = len(self.R)
         pred_probs = np.zeros(T)
         
         for r in range(T):
-            # Student-t predictive distribution
+            # Student-t predictive parameters
             df = 2 * self.alpha[r]
             mean = self.mu[r]
             scale = np.sqrt(self.beta[r] * (self.kappa[r] + 1) / (self.alpha[r] * self.kappa[r]))
-            pred_probs[r] = norm.pdf(x, loc=mean, scale=scale)
+            
+            # --- 关键修改开始 ---
+            # 使用 t 分布而不是 norm，防止概率下溢为 0
+            if scale < 1e-9:
+                # 保护：如果 scale 极小，退化为点质量
+                pred_probs[r] = 1.0 if abs(x - mean) < 1e-5 else 1e-10
+            else:
+                pred_probs[r] = t.pdf(x, df, loc=mean, scale=scale)
+            # --- 关键修改结束 ---
         
         # Calculate growth probabilities
         R_growth = self.R * pred_probs * (1 - self.hazard)
@@ -59,9 +63,17 @@ class BOCPD:
         
         # New run length distribution
         self.R = np.concatenate([[R_cp], R_growth])
-        self.R = self.R / np.sum(self.R)  # Normalize
         
-        # Trim if too long
+        # --- 关键修改：归一化保护 ---
+        total_prob = np.sum(self.R)
+        if total_prob < 1e-12 or np.isnan(total_prob):
+            # 如果概率崩了，重置为均匀分布，而不是让它变成 NaN
+            self.R = np.ones(len(self.R)) / len(self.R)
+        else:
+            self.R = self.R / total_prob
+        # ------------------------
+        
+        # Trim
         if len(self.R) > self.max_runlength:
             self.R = self.R[:self.max_runlength]
         
@@ -72,7 +84,6 @@ class BOCPD:
         new_beta = [self.beta0]
         
         for r in range(min(T, self.max_runlength - 1)):
-            # Posterior update
             kappa_new = self.kappa[r] + 1
             mu_new = (self.kappa[r] * self.mu[r] + x) / kappa_new
             alpha_new = self.alpha[r] + 0.5
@@ -88,12 +99,11 @@ class BOCPD:
         self.alpha = new_alpha
         self.beta = new_beta
         
-        # Detect change point (probability of recent change)
-        recent_cp_prob = np.sum(self.R[:5])  # Sum of first 5 run lengths
+        # Detect change point
+        recent_cp_prob = np.sum(self.R[:5])
         self.change_detected = recent_cp_prob > 0.5
         self.detection_history.append(self.change_detected)
         
-        # Return regime and position scale
         if self.change_detected:
             return 'shift', 0.3
         elif recent_cp_prob > 0.2:
@@ -102,11 +112,11 @@ class BOCPD:
             return 'stable', 1.0
     
     def get_action(self):
-        """Get recommended action (mean from most likely run length)"""
         most_likely = np.argmax(self.R)
         if most_likely < len(self.mu):
             return np.array([np.sign(self.mu[most_likely])])
         return np.array([0.0])
+
 
 
 class HMM:
