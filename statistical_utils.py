@@ -170,20 +170,28 @@ def performance_metrics_with_ci(returns, positions, n_bootstrap=1000, confidence
     """
     results = {}
     
-    # Helper to clean up repeated calls
-    def _add_metric(name, func, data):
-        lower, upper, point = bootstrap_ci(data, func, n_bootstrap, confidence)
-        results[name] = point
-        results[f'{name}_ci'] = (lower, upper)
-
-    _add_metric('sharpe_ratio', compute_sharpe_ratio, returns)
-    _add_metric('max_drawdown', compute_max_drawdown, returns)
-    _add_metric('calmar_ratio', compute_calmar_ratio, returns)
+    # 1. Sharpe Ratio
+    # 注意：这里的键名必须是 'sharpe_ci' 以匹配你的 reproduce_paper.py 调用
+    lower, upper, point = bootstrap_ci(returns, compute_sharpe_ratio, n_bootstrap, confidence)
+    results['sharpe_ratio'] = point
+    results['sharpe_ci'] = (lower, upper)
     
+    # 2. Max Drawdown
+    lower, upper, point = bootstrap_ci(returns, compute_max_drawdown, n_bootstrap, confidence)
+    results['max_drawdown'] = point
+    results['max_drawdown_ci'] = (lower, upper)
+    
+    # 3. Calmar Ratio
+    lower, upper, point = bootstrap_ci(returns, compute_calmar_ratio, n_bootstrap, confidence)
+    results['calmar_ratio'] = point
+    results['calmar_ci'] = (lower, upper)
+    
+    # 4. Other scalar metrics (no CI needed usually, or too expensive)
     results['final_return'] = np.sum(returns)
     results['turnover'] = compute_turnover(positions)
     
     return results
+
 
 
 def format_metric_with_ci(point, ci, is_percentage=False, decimals=2):
