@@ -145,15 +145,15 @@ def generate_synthetic_regime_data(n_periods=700, regime_changes=None, seed=42):
     for t in range(n_periods):
         if t < regime_changes[0]:
             # Bull market
-            ret = np.random.normal(0.0005, 0.01, size=1)
+            ret = np.random.normal(0.0005, 0.015, size=1)
             regime = 0
         elif t < regime_changes[1]:
             # Crisis
-            ret = np.random.normal(-0.0015, 0.03, size=1)
+            ret = np.random.normal(-0.0020, 0.03, size=1)
             regime = 1
         else:
             # Recovery
-            ret = np.random.normal(0.0003, 0.015, size=1)
+            ret = np.random.normal(0.0003, 0.02, size=1)
             regime = 2
         
         returns.append(ret)
