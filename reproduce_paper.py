@@ -82,9 +82,11 @@ def reproduce_table1_synthetic():
     
     # Run experiments
     results = {}
+    raw_returns_store = {}
     for name, algo in algorithms.items():
         print(f"\nRunning {name}...", end=' ')
         portfolio_ret, positions, regime_hist = run_algorithm(algo, returns)
+        raw_returns_store[name] = portfolio_ret
         
         # Compute metrics with CI
         metrics = performance_metrics_with_ci(portfolio_ret, positions, n_bootstrap=500)
@@ -128,8 +130,12 @@ def reproduce_table1_synthetic():
     print("Statistical Significance Tests (HAF vs. BOCPD)")
     print("-"*80)
     
-    haf_returns = returns.flatten() * results['HAF']['turnover']  # Simplified
-    bocpd_returns = returns.flatten() * results['BOCPD']['turnover']
+    #haf_returns = returns.flatten() * results['HAF']['turnover']  # Simplified
+    #bocpd_returns = returns.flatten() * results['BOCPD']['turnover']
+
+    haf_returns = raw_returns_store['HAF']
+    bocpd_returns = raw_returns_store['BOCPD']
+    
     
     from statistical_utils import compute_sharpe_ratio
     p_val, haf_sr, bocpd_sr = bootstrap_comparison(
@@ -262,11 +268,13 @@ def reproduce_negative_result():
     }
     
     results = {}
+    raw_returns_store = {}
     for name, algo in algorithms.items():
         print(f"Running {name}...", end=' ')
         portfolio_ret, positions, _ = run_algorithm(algo, returns)
         metrics = performance_metrics_with_ci(portfolio_ret, positions, n_bootstrap=300)
         results[name] = metrics
+        raw_returns_store[name] = portfolio_ret
         print("Done")
     
     # Compare
@@ -279,8 +287,10 @@ def reproduce_negative_result():
     
     # Statistical test
     from statistical_utils import compute_sharpe_ratio
-    haf_returns = returns.flatten() * 0.5  # Simplified
-    bol_returns = returns.flatten() * 0.5
+    #haf_returns = returns.flatten() * 0.5  # Simplified
+    #bol_returns = returns.flatten() * 0.5
+    haf_returns = raw_returns_store['HAF']
+    bol_returns = raw_returns_store['BOL']
     
     p_val, _, _ = bootstrap_comparison(haf_returns, bol_returns, 
                                        metric_fn=compute_sharpe_ratio,
