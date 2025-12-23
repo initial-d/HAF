@@ -357,7 +357,7 @@ def main():
     print("\n" + "#"*80)
     print("# PAPER REPRODUCTION: HAF Algorithm")
     print("# 'Robust Online Learning in Non-Stationary Markets'")
-    print("# Chen (2024)")
+    print("# Du (2025)")
     print("#"*80)
     print("\nThis script reproduces key results from the paper with:")
     print("  ✓ Bootstrap confidence intervals (1000 samples)")
