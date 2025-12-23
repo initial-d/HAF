@@ -11,7 +11,7 @@ from collections import deque
 class BOCPD:
     """Bayesian Online Change Point Detection (Adams & MacKay 2007)"""
     
-    def __init__(self, hazard_rate=0.01, mu0=0, kappa0=1, alpha0=10, beta0=1):
+    def __init__(self, hazard_rate=0.01, mu0=0, kappa0=1, alpha0=10, beta0=1e-4):
         """
         Args:
             hazard_rate: Prior probability of change point at each step
