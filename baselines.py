@@ -101,7 +101,7 @@ class BOCPD:
         
         # Detect change point
         recent_cp_prob = np.sum(self.R[:5])
-        self.change_detected = recent_cp_prob > 0.5
+        self.change_detected = recent_cp_prob > 0.2  #0.5
         self.detection_history.append(self.change_detected)
         
         if self.change_detected:
