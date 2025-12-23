@@ -12,7 +12,7 @@ from scipy.stats import t  # 必须导入 t
 class BOCPD:
     """Bayesian Online Change Point Detection (Adams & MacKay 2007)"""
     
-    def __init__(self, hazard_rate=0.01, mu0=0, kappa0=1, alpha0=10, beta0=1e-4):
+    def __init__(self, hazard_rate=0.01, mu0=0, kappa0=1, alpha0=1, beta0=1e-4):
         """
         Args:
             beta0: Scale of the variance prior. 1e-4 is appropriate for daily returns.
