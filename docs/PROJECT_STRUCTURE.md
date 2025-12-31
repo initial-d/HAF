@@ -310,15 +310,5 @@ class TradingSystem:
 | Contraction ratio | Definition 4.1 | Regime detection signal |
 | `pessimistic_mean()` | Definition 4.2 | Pessimistic decision rule |
 
-## Contributing
-
-When contributing:
-1. Keep core implementation under 500 lines
-2. Add tests for new features
-3. Update this documentation
-4. Maintain backward compatibility
-5. Follow existing code style
-
----
 
 **Questions?** See README.md or open an issue!
