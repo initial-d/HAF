@@ -7,7 +7,6 @@
 Implementation of the **Hausdorff-Adaptive Filter (HAF)** algorithm from the paper:
 
 > **"Robust Online Learning in Non-Stationary Markets: A Credal Set Approach with Uncertainty Quantification"**  
-> Yimin du
 
 ## 🎯 Paper Reproduction
 
@@ -246,8 +245,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Acknowledgments
 
-- Original paper by 
-- Built on credal set theory by Walley (1991) and fixed-point theorems by Caprio et al. (2025)
 
 ## Contact
 
