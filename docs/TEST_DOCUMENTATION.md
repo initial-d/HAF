@@ -625,4 +625,3 @@ pytest tests/test_haf.py --durations=10
 ✅ **功能性**: regime检测、决策制定  
 ✅ **集成性**: 端到端流程  
 
-通过这17个测试，我们对HAF的实现质量有了高度信心！🎯✨
