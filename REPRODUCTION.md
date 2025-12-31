@@ -3,7 +3,6 @@
 This directory contains code to reproduce the key results from:
 
 > **"Robust Online Learning in Non-Stationary Markets: A Credal Set Approach with Uncertainty Quantification"**  
-> Jane Chen, University of Chicago, December 2024
 
 ## Quick Start (2 minutes)
 
@@ -264,21 +263,3 @@ For issues or questions:
 2. See README.md for general usage
 3. Open a GitHub issue
 
-## Publication Checklist
-
-This implementation is **publication-ready** ✅:
-
-- [x] Core algorithm implemented faithfully
-- [x] All baseline methods included
-- [x] Statistical validation (Bootstrap CI, p-values)
-- [x] Key paper results reproduced (Tables 1, 3, negative result)
-- [x] Documentation complete
-- [x] Open-source license (MIT)
-- [x] Reproducibility ensured (fixed seeds)
-
-**Ready for**: Journal supplement, arXiv code link, GitHub release
-
----
-
-**Last Updated**: December 2025  
-**Maintainer**: HAF Implementation Team
